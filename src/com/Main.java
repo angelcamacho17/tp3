@@ -8,7 +8,8 @@ public class Main {
 
 	 public static void main(String[] args)
 	    {   
-		 AVLTree tree = new AVLTree();  
+		 //AVLTree tree = new AVLTree();  
+		 BinarySearchTree tree = new BinarySearchTree();
 		  
 	        /* Constructing tree given in the above figure */
 	        tree.root = tree.insert(tree.root, 1);  
