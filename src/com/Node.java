@@ -1,12 +1,16 @@
 package com;
 
-public class Node{
-	int key;
-	Node left;
-	Node right;	
-	public Node(int data){
-		this.key = data;
-		left = null;
-		right = null;
-	}
+public class Node {
+    public int key;
+    public int balance;
+    public int height;
+    public Node left;
+    public Node right;
+    public Node parent;
+ 
+    public Node(int key, Node parent) {
+        this.key = key;
+        this.parent = parent;
+    }
+	
 }

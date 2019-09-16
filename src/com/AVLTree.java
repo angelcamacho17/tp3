@@ -1,270 +1,208 @@
 package com;
 
-import com.AVLNode;
+import com.Node;
 import com.BinarySearchTree;
 
-public class AVLTree extends BinarySearchTree  
-{  
-	AVLNode root;  
-	
-	AVLTree(){
-		super();
-	}
-  
-    // A utility function to get height of the tree  
-    int height(AVLNode N)  
-    {  
-        if (N == null)  
-            return 0;  
-        return N.height;  
-    }  
-  
-    // A utility function to get maximum of two integers  
-    int max(int a, int b)  
-    {  
-        return (a > b) ? a : b;  
-    }  
-    
-    public AVLNode search(AVLNode root, int key) 
-    { 
-        // Base Cases: root is null or key is present at root 
-        if (root==null || root.key==key) 
-            return root; 
-      
-        // val is greater than root's key 
-        if (root.key > key) 
-            return search(root.left, key); 
-      
-        // val is less than root's key 
-        return search(root.right, key); 
-    } 
-  
-    // A utility function to right rotate subtree rooted with y  
-    // See the diagram given above.  
-    AVLNode rightRotate(AVLNode y)  
-    {  
-        AVLNode x = y.left;  
-        AVLNode T2 = x.right;  
-  
-        // Perform rotation  
-        x.right = y;  
-        y.left = T2;  
-  
-        // Update heights  
-        y.height = max(height(y.left), height(y.right)) + 1;  
-        x.height = max(height(x.left), height(x.right)) + 1;  
-  
-        // Return new root  
-        return x;  
-    }  
-  
-    // A utility function to left rotate subtree rooted with x  
-    // See the diagram given above.  
-    AVLNode leftRotate(AVLNode x)  
-    {  
-        AVLNode y = x.right;  
-        AVLNode T2 = y.left;  
-  
-        // Perform rotation  
-        y.left = x;  
-        x.right = T2;  
-  
-        // Update heights  
-        x.height = max(height(x.left), height(x.right)) + 1;  
-        y.height = max(height(y.left), height(y.right)) + 1;  
-  
-        // Return new root  
-        return y;  
-    }  
-  
-    // Get Balance factor of node N  
-    int getBalance(AVLNode N)  
-    {  
-        if (N == null)  
-            return 0;  
-        return height(N.left) - height(N.right);  
-    }  
-  
-    AVLNode insert(AVLNode node, int key)  
-    { 
-    	  
-        /* 1.  Perform the normal BST insertion */
-        if (node == null) 
-            return (new AVLNode(key)); 
-  
-        if (key < node.key) 
-            node.left = insert(node.left, key); 
-        else if (key > node.key) 
-            node.right = insert(node.right, key); 
-        else // Duplicate keys not allowed 
-            return node; 
-  
-        /* 2. Update height of this ancestor node */
-        node.height = 1 + max(height(node.left), 
-                              height(node.right)); 
-  
-        /* 3. Get the balance factor of this ancestor 
-              node to check whether this node became 
-              unbalanced */
-        int balance = getBalance(node); 
-  
-        // If this node becomes unbalanced, then there 
-        // are 4 cases Left Left Case 
-        if (balance > 1 && key < node.left.key) 
-            return rightRotate(node); 
-  
-        // Right Right Case 
-        if (balance < -1 && key > node.right.key) 
-            return leftRotate(node); 
-  
-        // Left Right Case 
-        if (balance > 1 && key > node.left.key) { 
-            node.left = leftRotate(node.left); 
-            return rightRotate(node); 
-        } 
-  
-        // Right Left Case 
-        if (balance < -1 && key < node.right.key) { 
-            node.right = rightRotate(node.right); 
-            return leftRotate(node); 
-        } 
-  
-        /* return the (unchanged) node pointer */
-        return node; 
-    } 
-    /* Given a non-empty binary search tree, return the  
-    node with minimum key value found in that tree.  
-    Note that the entire tree does not need to be  
-    searched. */
-    AVLNode minValueNode(AVLNode node)  
-    {  
-        AVLNode current = node;  
-  
-        /* loop down to find the leftmost leaf */
-        while (current.left != null)  
-        current = current.left;  
-  
-        return current;  
-    }  
-  
-    public AVLNode delete(AVLNode root, int key)  
-    {  
-        // STEP 1: PERFORM STANDARD BST DELETE  
-        if (root == null)  
-            return root;  
-  
-        // If the key to be deleted is smaller than  
-        // the root's key, then it lies in left subtree  
-        if (key < root.key)  
-            root.left = delete(root.left, key);  
-  
-        // If the key to be deleted is greater than the  
-        // root's key, then it lies in right subtree  
-        else if (key > root.key)  
-            root.right = delete(root.right, key);  
-  
-        // if key is same as root's key, then this is the node  
-        // to be deleted  
-        else
-        {  
-  
-            // node with only one child or no child  
-            if ((root.left == null) || (root.right == null))  
-            {  
-                AVLNode temp = null;  
-                if (temp == root.left)  
-                    temp = root.right;  
-                else
-                    temp = root.left;  
-  
-                // No child case  
-                if (temp == null)  
-                {  
-                    temp = root;  
-                    root = null;  
-                }  
-                else // One child case  
-                    root = temp; // Copy the contents of  
-                                // the non-empty child  
-            }  
-            else
-            {  
-  
-                // node with two children: Get the inorder  
-                // successor (smallest in the right subtree)  
-                AVLNode temp = minValueNode(root.right);  
-  
-                // Copy the inorder successor's data to this node  
-                root.key = temp.key;  
-  
-                // Delete the inorder successor  
-                root.right = delete(root.right, temp.key);  
-            }  
-        }  
-  
-        // If the tree had only one node then return  
-        if (root == null)  
-            return root;  
-  
-        // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE  
-        root.height = max(height(root.left), height(root.right)) + 1;  
-  
-        // STEP 3: GET THE BALANCE FACTOR OF THIS NODE (to check whether  
-        // this node became unbalanced)  
-        int balance = getBalance(root);  
-  
-        // If this node becomes unbalanced, then there are 4 cases  
-        // Left Left Case  
-        if (balance > 1 && getBalance(root.left) >= 0)  
-            return rightRotate(root);  
-  
-        // Left Right Case  
-        if (balance > 1 && getBalance(root.left) < 0)  
-        {  
-            root.left = leftRotate(root.left);  
-            return rightRotate(root);  
-        }  
-  
-        // Right Right Case  
-        if (balance < -1 && getBalance(root.right) <= 0)  
-            return leftRotate(root);  
-  
-        // Right Left Case  
-        if (balance < -1 && getBalance(root.right) > 0)  
-        {  
-            root.right = rightRotate(root.right);  
-            return leftRotate(root);  
-        }  
-  
-        return root;  
-    }  
-  
-    // A utility function to print preorder traversal of  
-    // the tree. The function also prints height of every  
-    // node 
-    
-    void inOrder(AVLNode node) 
-    { 
-        if (node == null) 
-            return; 
-  
-        /* first recur on left child */
-        inOrder(node.left); 
-  
-        /* then print the data of node */
-        System.out.print(node.key + " " +"("+getBalance(node)+")");  
-  
-        /* now recur on right child */
-        inOrder(node.right); 
-    } 
-  
-    void preOrder(AVLNode node)  
-    {  
-        if (node != null)  
-        {  
-            System.out.print(node.key + " " +"("+getBalance(node)+")");  
-            preOrder(node.left);  
-            preOrder(node.right);  
-        }  
-    }  
- }
+public class AVLTree extends BinarySearchTree{
+	 
+		@Override
+	    public boolean insert(int key) {
+	        if (root == null) {
+	            root = new Node(key, null);
+	            return true;
+	        }
+	 
+	        Node n = root;
+	        while (true) {
+	            if (n.key == key)
+	                return false;
+	 
+	            Node parent = n;
+	 
+	            boolean goLeft = n.key > key;
+	            n = goLeft ? n.left : n.right;
+	 
+	            if (n == null) {
+	                if (goLeft) {
+	                    parent.left = new Node(key, parent);
+	                } else {
+	                    parent.right = new Node(key, parent);
+	                }
+	                rebalance(parent);
+	                break;
+	            }
+	        }
+	        return true;
+	    }
+	  
+	    private void delete(Node node) {
+	        if (node.left == null && node.right == null) {
+	            if (node.parent == null) {
+	                root = null;
+	            } else {
+	                Node parent = node.parent;
+	                if (parent.left == node) {
+	                    parent.left = null;
+	                } else {
+	                    parent.right = null;
+	                }
+	                rebalance(parent);
+	            }
+	            return;
+	        }
+	 
+	        if (node.left != null) {
+	            Node child = node.left;
+	            while (child.right != null) child = child.right;
+	            node.key = child.key;
+	            delete(child);
+	        } else {
+	            Node child = node.right;
+	            while (child.left != null) child = child.left;
+	            node.key = child.key;
+	            delete(child);
+	        }
+	    }
+	 
+	    @Override
+	    public void delete(int delKey) {
+	        if (root == null)
+	            return;
+	 
+	        Node child = root;
+	        while (child != null) {
+	            Node node = child;
+	            child = delKey >= node.key ? node.right : node.left;
+	            if (delKey == node.key) {
+	                delete(node);
+	                return;
+	            }
+	        }
+	    }
+	 
+	    private void rebalance(Node n) {
+	        setBalance(n);
+	 
+	        if (n.balance == -2) {
+	            if (height(n.left.left) >= height(n.left.right))
+	                n = rotateRight(n);
+	            else
+	                n = rotateLeftThenRight(n);
+	 
+	        } else if (n.balance == 2) {
+	            if (height(n.right.right) >= height(n.right.left))
+	                n = rotateLeft(n);
+	            else
+	                n = rotateRightThenLeft(n);
+	        }
+	 
+	        if (n.parent != null) {
+	            rebalance(n.parent);
+	        } else {
+	            root = n;
+	        }
+	    }
+	 
+	    private Node rotateLeft(Node a) {
+	 
+	        Node b = a.right;
+	        b.parent = a.parent;
+	 
+	        a.right = b.left;
+	 
+	        if (a.right != null)
+	            a.right.parent = a;
+	 
+	        b.left = a;
+	        a.parent = b;
+	 
+	        if (b.parent != null) {
+	            if (b.parent.right == a) {
+	                b.parent.right = b;
+	            } else {
+	                b.parent.left = b;
+	            }
+	        }
+	 
+	        setBalance(a, b);
+	 
+	        return b;
+	    }
+	 
+	    private Node rotateRight(Node a) {
+	 
+	        Node b = a.left;
+	        b.parent = a.parent;
+	 
+	        a.left = b.right;
+	 
+	        if (a.left != null)
+	            a.left.parent = a;
+	 
+	        b.right = a;
+	        a.parent = b;
+	 
+	        if (b.parent != null) {
+	            if (b.parent.right == a) {
+	                b.parent.right = b;
+	            } else {
+	                b.parent.left = b;
+	            }
+	        }
+	 
+	        setBalance(a, b);
+	 
+	        return b;
+	    }
+	 
+	    private Node rotateLeftThenRight(Node n) {
+	        n.left = rotateLeft(n.left);
+	        return rotateRight(n);
+	    }
+	 
+	    private Node rotateRightThenLeft(Node n) {
+	        n.right = rotateRight(n.right);
+	        return rotateLeft(n);
+	    }
+	 
+	    private int height(Node n) {
+	        if (n == null)
+	            return -1;
+	        return n.height;
+	    }
+	 
+	    private void setBalance(Node... nodes) {
+	        for (Node n : nodes) {
+	            reheight(n);
+	            n.balance = height(n.right) - height(n.left);
+	        }
+	    }
+	 
+	    public void printBalance() {
+	        printBalance(root);
+	    }
+	 
+	    private void printBalance(Node n) {
+	        if (n != null) {
+	            printBalance(n.left);
+	            System.out.printf("%s ", n.balance);
+	            printBalance(n.right);
+	        }
+	    }
+	 
+	    private void reheight(Node node) {
+	        if (node != null) {
+	            node.height = 1 + Math.max(height(node.left), height(node.right));
+	        }
+	    }
+	    @Override
+	    public void inOrder(Node root) 
+	    { 
+	        if (root != null) 
+	        { 
+	        	inOrder(root.left); 
+	            System.out.print(root.key + " ("+ root.balance+")"); 
+	            inOrder(root.right); 
+	        } 
+	    } 
+}

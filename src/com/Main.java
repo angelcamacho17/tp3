@@ -8,19 +8,19 @@ public class Main {
 
 	 public static void main(String[] args)
 	    {   
-		 //AVLTree tree = new AVLTree();  
-		 BinarySearchTree tree = new BinarySearchTree();
+		 AVLTree tree = new AVLTree();  
+		 //BinarySearchTree tree = new BinarySearchTree();
 		  
 	        /* Constructing tree given in the above figure */
-	        tree.root = tree.insert(tree.root, 1);  
-	        tree.root = tree.insert(tree.root, 2);  
-	        tree.root = tree.insert(tree.root, 3);  
-	        tree.root = tree.insert(tree.root, 4);  
-	        tree.root = tree.insert(tree.root, 5);  
-	        tree.root = tree.insert(tree.root, 6);  
-	        tree.root = tree.insert(tree.root, 7);  
-	        tree.root = tree.insert(tree.root, 8);  
-	        tree.root = tree.insert(tree.root, 9);  
+		 	tree.insert(1);  
+		 	tree.insert(2);  
+		 	tree.insert(3);  
+		 	tree.insert(4);  
+		 	tree.insert(5);  
+		 	tree.insert(6);  
+		 	tree.insert(7);  
+		 	tree.insert(8);  
+		 	tree.insert(9);  
 		 	
 	        Scanner scan = new Scanner(System.in);
 	        Scanner scanElement = new Scanner(System.in);
@@ -50,8 +50,8 @@ public class Main {
 	                System.out.println("Inserte un numero:");
 	                try{
 	                	element = Integer.parseInt(scanElement.nextLine());
-	                	if (tree.search(tree.root,element)==null)       	
-	                	tree.insert(tree.root,element);
+	                	if (!tree.search(element))       	
+	                	tree.insert(element);
 	                	else 
 	                		System.out.println("Ya existe ese elemento !");
 	                	
@@ -63,8 +63,8 @@ public class Main {
 	                System.out.println("Elemento a eliminar:");
 	                try{
 	                	element = Integer.parseInt(scanElement.nextLine());
-	                	if (tree.search(tree.root,element)!=null) 
-	                		tree.delete(tree.root,element );
+	                	if (tree.search(element)) 
+	                		tree.delete(element );
 	                	else 
 	                		System.out.println("No existe ese elemento !");
 	                }catch (Exception e) {
