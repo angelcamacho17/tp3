@@ -74,9 +74,12 @@ public class Main {
 	            case 3 : 
 	            	System.out.println("Arbol in order:");
 	                tree.inOrder(tree.root);
-	                break;         
+	                break;   
+	            case 4 : 
+	            	System.out.println("Bye. ");
+	                break; 
 	            default : 
-	                System.out.println("Bye \n ");
+	                System.out.println("Opcion no valida. ");
 	                break;   
 	            }
 	        }
